@@ -23,12 +23,18 @@ public class MovementScript : MonoBehaviour
     void FixedUpdate()
     {
 
-        rb.linearVelocity = moveInput * moveSpeed;
+        Vector2 moveDir = new Vector2(moveInput.x, 0);
+        rb.linearVelocity = moveDir * moveSpeed;
     }
 
 
     public void PlayerMove(InputAction.CallbackContext ctx)
     {
         moveInput = ctx.ReadValue<Vector2>();
+    }
+
+    public void PlayerFloat(InputAction.CallbackContext ctx)
+    {
+
     }
 }
