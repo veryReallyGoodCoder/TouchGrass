@@ -1,12 +1,19 @@
-using System.Buffers.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 
 public class FloatingBehaviourScript : MonoBehaviour
 {
-    [SerializeField] float offset, jumpSmooth = 5;
-    float targetY;
+    private Vector2 pointPos;
+    private Vector3 mousePoint;
+    [SerializeField] private float mouseDist = 3;
+
+
+
+    [Header("Flight Deck")]
+    [SerializeField] float flySpeed = 5;
+    
+    [SerializeField] float offset = 5;
     [SerializeField] private float lerpTimer = 1.5f;
 
     private bool flyActive = false;
@@ -49,19 +56,14 @@ public class FloatingBehaviourScript : MonoBehaviour
             {
                 rb.gravityScale = 0f;
 
-                targetY = transform.position.y + offset;
+                //Vector2 targetY = new Vector2(transform.position.x, transform.position.y + offset);
+
+                //transform.position = Vector2.Lerp(transform.position, targetY, lerpTimer);
+
+                //transform.position = new Vector3(transform.position.x, newY, 0);
+                //rb.AddForceY(flySpeed * offset);
 
                 
-
-                for(float i =0; i < lerpTimer; i += Time.deltaTime)
-                {
-                    float newY = Mathf.Lerp(transform.position.y, targetY, i);
-
-                    //transform.position = new Vector3(transform.position.x, newY, 0);
-                    rb.MovePosition(new Vector2(transform.position.x, newY));
-
-                    //Debug.Log(i);
-                }
             }
             else rb.gravityScale = 10f;
 
@@ -83,7 +85,7 @@ public class FloatingBehaviourScript : MonoBehaviour
         isHolding = false;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
        
 
@@ -91,12 +93,43 @@ public class FloatingBehaviourScript : MonoBehaviour
         {
             Flying();
         }
-    }
 
+        OrbFollow(flyActive);
+        Debug.Log(pointPos);
+    }
+   
+    
     private void Flying()
     {
+        rb.AddForce(Vector2.up * flySpeed, ForceMode2D.Force);
+
+        Debug.Log($"{rb.totalForce}");
+        
         Debug.Log("kakaaaa");
         
+    }
+
+    private void OrbFollow(bool isFloating)
+    {
+        if (!isFloating) return;
+
+        rb.MovePosition(mousePoint);
+        
+        //Vector2 orbPos = Vector2.Lerp(transform.position, pointPos, lerpTimer);
+        //transform.position = Camera.main.ScreenToWorldPoint(mousePoint);
+        /*if(orbPos != pointPos)
+        {
+            rb.MovePosition(pointPos);
+        }*/
+
+    }
+
+
+    //INPUT HANDLING
+    public void PointControls(InputAction.CallbackContext ctx)
+    {
+        pointPos = ctx.ReadValue<Vector2>();
+        mousePoint = Camera.main.ScreenToWorldPoint(pointPos);
     }
 
 }
