@@ -101,7 +101,8 @@ public class FloatingBehaviourScript : MonoBehaviour
     
     private void Flying()
     {
-        rb.AddForce(Vector2.up * flySpeed, ForceMode2D.Force);
+        Vector2 direction = mousePoint - transform.position;
+        rb.AddForce(direction * flySpeed, ForceMode2D.Force);
 
         Debug.Log($"{rb.totalForce}");
         
