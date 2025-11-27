@@ -113,8 +113,16 @@ public class FloatingBehaviourScript : MonoBehaviour
     {
         if (!isFloating) return;
 
-        rb.MovePosition(mousePoint);
-        
+        Vector3 orbMove = Vector3.Lerp(transform.position, mousePoint, lerpTimer);
+
+        Vector2 dir = mousePoint - transform.position;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0,0,angle);
+
+        //rb.MovePosition(orbMove);
+        //transform.localRotation = Quaternion.Euler(0, 0,mousePoint.z);
+        //transform.Rotate(0, 0, mousePoint.x);
+
         //Vector2 orbPos = Vector2.Lerp(transform.position, pointPos, lerpTimer);
         //transform.position = Camera.main.ScreenToWorldPoint(mousePoint);
         /*if(orbPos != pointPos)
