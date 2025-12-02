@@ -6,14 +6,15 @@ public class FloatingBehaviourScript : MonoBehaviour
 {
     private Vector2 pointPos;
     private Vector3 mousePoint;
-    [SerializeField] private float mouseDist = 3;
 
+    private bool isController;
+    private Vector2 controllerDir;
+    [SerializeField] private float stickSpeed = 10;
 
 
     [Header("Flight Deck")]
     [SerializeField] float flySpeed = 5;
     
-    [SerializeField] float offset = 5;
     [SerializeField] private float lerpTimer = 1.5f;
 
     private bool flyActive = false;
@@ -27,6 +28,7 @@ public class FloatingBehaviourScript : MonoBehaviour
     {
         _input = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody2D>();
+
 
         if (_input == null)
         {
@@ -95,16 +97,27 @@ public class FloatingBehaviourScript : MonoBehaviour
         }
 
         OrbFollow(flyActive);
-        Debug.Log(pointPos);
+        //Debug.Log(pointPos);
     }
    
     
     private void Flying()
     {
-        Vector2 direction = mousePoint - transform.position;
+
+        Vector2 direction;
+        if (isController)
+        {
+            direction = controllerDir * stickSpeed;
+        }
+        else
+        {
+            direction = mousePoint - transform.position;
+
+        }
+
         rb.AddForce(direction * flySpeed, ForceMode2D.Force);
 
-        Debug.Log($"{rb.totalForce}");
+        //Debug.Log($"{rb.totalForce}");
         
         Debug.Log("kakaaaa");
         
@@ -114,9 +127,18 @@ public class FloatingBehaviourScript : MonoBehaviour
     {
         if (!isFloating) return;
 
-        Vector3 orbMove = Vector3.Lerp(transform.position, mousePoint, lerpTimer);
+        //Vector3 orbMove = Vector3.Lerp(transform.position, mousePoint, lerpTimer);
 
-        Vector2 dir = mousePoint - transform.position;
+        Vector2 dir;
+        if (isController)
+        {
+            dir = controllerDir * stickSpeed;
+        }
+        else
+        {
+            dir = mousePoint - transform.position;
+        }
+            
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0,0,angle);
 
@@ -138,7 +160,27 @@ public class FloatingBehaviourScript : MonoBehaviour
     public void PointControls(InputAction.CallbackContext ctx)
     {
         pointPos = ctx.ReadValue<Vector2>();
-        mousePoint = Camera.main.ScreenToWorldPoint(pointPos);
+
+        if(pointPos.magnitude > 1.5f)
+        {
+            isController = false;
+
+            mousePoint = Camera.main.ScreenToWorldPoint(pointPos);
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+
+            Debug.Log("using mouse");
+
+        }
+        else
+        {
+            isController = true;
+
+            controllerDir = pointPos;
+            Cursor.lockState = CursorLockMode.Locked;
+
+            Debug.Log("using controller");
+        }
     }
 
 }
