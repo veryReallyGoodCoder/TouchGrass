@@ -33,8 +33,4 @@ public class MovementScript : MonoBehaviour
         moveInput = ctx.ReadValue<Vector2>();
     }
 
-    public void PlayerFloat(InputAction.CallbackContext ctx)
-    {
-
-    }
 }

@@ -15,8 +15,6 @@ public class FloatingBehaviourScript : MonoBehaviour
     [Header("Flight Deck")]
     [SerializeField] float flySpeed = 5;
     
-    [SerializeField] private float lerpTimer = 1.5f;
-
     private bool flyActive = false;
     private bool isHolding = false;
 
@@ -29,15 +27,8 @@ public class FloatingBehaviourScript : MonoBehaviour
         _input = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody2D>();
 
-
-        if (_input == null)
-        {
-            Debug.Log("nope");
-        }
-        else
-        {
-            Debug.Log("yep");
-        }
+        if (_input != null) Debug.Log("floating input available");
+        else Debug.Log("ERROR floating input not available");
 
         var jumpAction = _input.actions["Jump"];
 

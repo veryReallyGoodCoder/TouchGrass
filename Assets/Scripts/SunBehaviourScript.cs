@@ -28,14 +28,25 @@ public class SunBehaviourScript : MonoBehaviour
         {
             psEmissions.enabled = false;
             Debug.Log("enemy blocking sun");
+            return;
         }
 
-        if (collision.CompareTag("Player"))
+        /*if (collision.CompareTag("Player"))
         {
             psEmissions.enabled = true;
             Debug.Log($"player shining {ps.emission.enabled}");
-        }
+        }*/
     }
 
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        var psEms = ps.emission;
+
+        if (collision.CompareTag("Enemy"))
+        {
+            psEms.enabled = true;
+        }
+    }
 
 }
